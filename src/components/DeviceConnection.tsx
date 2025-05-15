@@ -91,7 +91,7 @@ const DeviceConnection: React.FC<DeviceConnectionProps> = ({ type, onConnect }) 
           onClick={handleConnect} 
           disabled={!selectedDevice || isScanning || isConnected} 
           className="flex-1"
-          variant="success"
+          variant="default"
         >
           <Link className="mr-2" size={16} />
           Connect
