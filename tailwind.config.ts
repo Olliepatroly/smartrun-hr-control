@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				hrzone: {
+					1: '#4ade80', // green-400 - recovery zone
+					2: '#22d3ee', // cyan-400 - fat burning zone
+					3: '#fbbf24', // amber-400 - aerobic zone
+					4: '#f87171', // red-400 - anaerobic zone
+					5: '#ef4444', // red-500 - maximum zone
 				}
 			},
 			borderRadius: {
@@ -84,11 +92,25 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse': {
+					'0%': { opacity: '1' },
+					'50%': { opacity: '0.5' },
+					'100%': { opacity: '1' }
+				},
+				'heartbeat': {
+					'0%': { transform: 'scale(1)' },
+					'25%': { transform: 'scale(1.1)' },
+					'50%': { transform: 'scale(1)' },
+					'75%': { transform: 'scale(1.1)' },
+					'100%': { transform: 'scale(1)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse': 'pulse 2s infinite',
+				'heartbeat': 'heartbeat 1.5s ease-in-out infinite'
 			}
 		}
 	},
