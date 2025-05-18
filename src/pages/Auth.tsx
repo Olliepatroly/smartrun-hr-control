@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Navigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Navigate, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { useAuth } from '@/contexts/AuthContext';
 
 type AuthMode = "signin" | "signup";
 
@@ -19,11 +20,12 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [session, setSession] = useState(() => supabase.auth.getSession());
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   // If user is already logged in, redirect to home page
-  if (session) {
+  if (user) {
     return <Navigate to="/" replace />;
   }
 
@@ -45,6 +47,8 @@ const Auth = () => {
           title: "Welcome back!",
           description: "You've successfully signed in."
         });
+        
+        navigate('/', { replace: true });
       } else {
         const { data, error } = await supabase.auth.signUp({
           email,
@@ -72,6 +76,8 @@ const Auth = () => {
           title: "Account created!",
           description: "Your account has been successfully created."
         });
+        
+        // Don't navigate yet as the user might need to verify their email
       }
     } catch (err: any) {
       setError(err.message || "An error occurred during authentication");
