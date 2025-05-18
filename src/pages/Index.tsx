@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Heart, HelpCircle } from 'lucide-react';
@@ -13,6 +12,7 @@ import HeartRateMonitor from '@/components/HeartRateMonitor';
 import WorkoutStats from '@/components/WorkoutStats';
 import StatusMessage from '@/components/StatusMessage';
 import HelpModal from '@/components/HelpModal';
+import ProfileDropdown from '@/components/ProfileDropdown';
 
 import {
   calculateMaxHeartRate,
@@ -283,15 +283,18 @@ const Index = () => {
             <Heart className="h-6 w-6" />
             <h1 className="text-2xl font-bold">SmartRun HR</h1>
           </div>
-          <Button 
-            size="sm"
-            variant="outline" 
-            onClick={() => setIsHelpModalOpen(true)}
-            className="border-indigo-400 hover:bg-indigo-600 text-white"
-          >
-            <HelpCircle className="mr-2 h-4 w-4" />
-            Help
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button 
+              size="sm"
+              variant="outline" 
+              onClick={() => setIsHelpModalOpen(true)}
+              className="border-indigo-400 hover:bg-indigo-600 text-white"
+            >
+              <HelpCircle className="mr-2 h-4 w-4" />
+              Help
+            </Button>
+            <ProfileDropdown />
+          </div>
         </div>
       </header>
       
