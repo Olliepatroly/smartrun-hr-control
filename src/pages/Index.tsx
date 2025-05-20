@@ -10,6 +10,7 @@ import SpeedSettings from '@/components/SpeedSettings';
 import WorkoutControls from '@/components/WorkoutControls';
 import HeartRateMonitor from '@/components/HeartRateMonitor';
 import WorkoutStats from '@/components/WorkoutStats';
+import WorkoutGraphs from '@/components/WorkoutGraphs';
 import StatusMessage from '@/components/StatusMessage';
 import HelpModal from '@/components/HelpModal';
 import ProfileDropdown from '@/components/ProfileDropdown';
@@ -50,6 +51,10 @@ const Index = () => {
   const [workoutElapsed, setWorkoutElapsed] = useState(0);
   const [workoutDistance, setWorkoutDistance] = useState(0);
   
+  // Graph data
+  const [heartRateData, setHeartRateData] = useState<{ time: number; value: number | null }[]>([]);
+  const [speedData, setSpeedData] = useState<{ time: number; value: number | null }[]>([]);
+  
   // UI state
   const [statusMessage, setStatusMessage] = useState<string | null>('Connect your heart rate monitor and treadmill to begin');
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
@@ -72,11 +77,26 @@ const Index = () => {
         setWorkoutElapsed(prev => prev + 1);
         // Update distance (km/h to km/s)
         setWorkoutDistance(prev => prev + currentSpeed / 3600);
+        
+        // Update graph data when workout is active
+        if (currentHR !== null) {
+          setHeartRateData(prevData => {
+            const newData = [...prevData, { time: workoutElapsed, value: currentHR }];
+            // Keep only the last 60 data points (60 seconds)
+            return newData.slice(-60);
+          });
+        }
+        
+        setSpeedData(prevData => {
+          const newData = [...prevData, { time: workoutElapsed, value: currentSpeed }];
+          // Keep only the last 60 data points (60 seconds)
+          return newData.slice(-60);
+        });
       }, 1000);
       
       return () => clearInterval(interval);
     }
-  }, [workoutActive, workoutPaused, currentSpeed]);
+  }, [workoutActive, workoutPaused, currentSpeed, currentHR, workoutElapsed]);
   
   // Heart rate adjustment logic
   useEffect(() => {
@@ -198,6 +218,10 @@ const Index = () => {
     setWorkoutStartTime(new Date());
     setWorkoutElapsed(0);
     setWorkoutDistance(0);
+    
+    // Reset graph data on workout start
+    setHeartRateData([]);
+    setSpeedData([]);
     
     // Set initial speed to minimum
     setCurrentSpeed(minSpeed);
@@ -379,6 +403,14 @@ const Index = () => {
                 targetHR={targetHR}
                 time={formattedTime}
                 distance={workoutDistance}
+              />
+            </div>
+            
+            {/* Graphs */}
+            <div className="mb-6">
+              <WorkoutGraphs
+                heartRateData={heartRateData}
+                speedData={speedData}
               />
             </div>
             
