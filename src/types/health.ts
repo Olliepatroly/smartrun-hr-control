@@ -12,4 +12,4 @@ export interface HealthMetrics {
   updated_at: string;
 }
 
-export type CardiacDisabilityOption = 'CABG' | 'Arrhythmia' | 'MI' | null;
+export type CardiacDisabilityOption = 'CABG' | 'Arrhythmia' | 'MI' | 'none' | null;

@@ -156,14 +156,14 @@ const HealthMetricsForm = () => {
           <div className="space-y-2">
             <Label htmlFor="cardiacDisability">Cardiac Disability (if any)</Label>
             <Select
-              value={cardiacDisability || ''}
-              onValueChange={(value) => setCardiacDisability(value as CardiacDisabilityOption)}
+              value={cardiacDisability || "none"}
+              onValueChange={(value) => setCardiacDisability(value === "none" ? null : value as CardiacDisabilityOption)}
             >
               <SelectTrigger id="cardiacDisability">
                 <SelectValue placeholder="Select if applicable" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None</SelectItem>
+                <SelectItem value="none">None</SelectItem>
                 <SelectItem value="CABG">CABG</SelectItem>
                 <SelectItem value="Arrhythmia">Arrhythmia</SelectItem>
                 <SelectItem value="MI">MI</SelectItem>
