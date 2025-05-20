@@ -3,11 +3,13 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from "@/integrations/supabase/client";
 import { Profile } from '@/types/auth';
+import { HealthMetrics } from '@/types/health';
 
 interface AuthContextType {
   session: Session | null;
   user: User | null;
   profile: Profile | null;
+  healthMetrics: HealthMetrics | null;
   signOut: () => Promise<void>;
   loading: boolean;
 }
@@ -18,6 +20,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [healthMetrics, setHealthMetrics] = useState<HealthMetrics | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -34,6 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }, 0);
         } else {
           setProfile(null);
+          setHealthMetrics(null);
           setLoading(false);
         }
       }
@@ -58,21 +62,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
+      // Fetch profile data
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
       
-      if (error) {
-        console.error('Error fetching profile:', error);
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
         setProfile(null);
       } else {
-        setProfile(data);
+        setProfile(profileData);
+      }
+
+      // Fetch health metrics data
+      const { data: healthData, error: healthError } = await supabase
+        .from('health_metrics')
+        .select('*')
+        .eq('user_id', userId)
+        .maybeSingle();
+      
+      if (healthError) {
+        console.error('Error fetching health metrics:', healthError);
+        setHealthMetrics(null);
+      } else {
+        setHealthMetrics(healthData);
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('Error fetching user data:', error);
       setProfile(null);
+      setHealthMetrics(null);
     } finally {
       setLoading(false);
     }
@@ -86,6 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     session,
     user,
     profile,
+    healthMetrics,
     signOut,
     loading
   };

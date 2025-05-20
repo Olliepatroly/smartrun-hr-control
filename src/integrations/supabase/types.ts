@@ -9,6 +9,53 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      health_metrics: {
+        Row: {
+          cardiac_disability: string | null
+          created_at: string | null
+          height: number | null
+          id: string
+          max_heart_rate: number | null
+          resting_heart_rate: number | null
+          updated_at: string | null
+          user_id: string
+          vo2max: number | null
+          weight: number | null
+        }
+        Insert: {
+          cardiac_disability?: string | null
+          created_at?: string | null
+          height?: number | null
+          id?: string
+          max_heart_rate?: number | null
+          resting_heart_rate?: number | null
+          updated_at?: string | null
+          user_id: string
+          vo2max?: number | null
+          weight?: number | null
+        }
+        Update: {
+          cardiac_disability?: string | null
+          created_at?: string | null
+          height?: number | null
+          id?: string
+          max_heart_rate?: number | null
+          resting_heart_rate?: number | null
+          updated_at?: string | null
+          user_id?: string
+          vo2max?: number | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "health_metrics_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
