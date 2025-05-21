@@ -44,6 +44,16 @@ const AIRecommendationButton: React.FC<AIRecommendationButtonProps> = ({
         return;
       }
 
+      console.log("Sending data to analyze-metrics:", {
+        userId: user.id,
+        currentHR,
+        targetZoneMin: targetHR.min,
+        targetZoneMax: targetHR.max,
+        currentSpeed,
+        minSpeed,
+        maxSpeed
+      });
+
       // Call the analyze-metrics edge function
       const { data, error } = await supabase.functions.invoke('analyze-metrics', {
         body: {
@@ -63,6 +73,8 @@ const AIRecommendationButton: React.FC<AIRecommendationButtonProps> = ({
         setIsAnalyzing(false);
         return;
       }
+
+      console.log("AI recommendation response:", data);
 
       // Handle the recommendation
       if (data && data.action && typeof data.amount === 'number' && onAIRecommendation) {

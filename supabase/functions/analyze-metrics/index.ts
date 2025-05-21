@@ -10,7 +10,7 @@ const corsHeaders = {
 // Initialize Supabase client using environment variables
 const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
 const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
-const openAIApiKey = Deno.env.get('Analysis_metrics') ?? '';
+const openAIApiKey = Deno.env.get('OPENAI_API_KEY') ?? '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 serve(async (req) => {
