@@ -376,9 +376,14 @@ const Index = () => {
               isWorkoutActive={workoutActive}
               isPaused={workoutPaused}
               canStart={hrConnected && treadmillConnected && (!!targetZone || (!!customMinHR && !!customMaxHR))}
+              currentSpeed={currentSpeed}
               onStart={handleStartWorkout}
               onPauseResume={handlePauseResumeWorkout}
               onStop={handleStopWorkout}
+              onSpeedChange={(change) => {
+                const newSpeed = Math.max(minSpeed, Math.min(maxSpeed, currentSpeed + change));
+                setCurrentSpeed(newSpeed);
+              }}
             />
           </div>
           
@@ -411,6 +416,23 @@ const Index = () => {
               <WorkoutGraphs
                 heartRateData={heartRateData}
                 speedData={speedData}
+                isWorkoutActive={workoutActive}
+                currentHR={currentHR}
+                targetHR={targetHR}
+                currentSpeed={currentSpeed}
+                minSpeed={minSpeed}
+                maxSpeed={maxSpeed}
+                onAIRecommendation={(action, amount) => {
+                  if (action === 'increase') {
+                    const newSpeed = Math.min(maxSpeed, currentSpeed + amount);
+                    setCurrentSpeed(newSpeed);
+                    showStatusMessage(`AI increased speed to ${newSpeed.toFixed(1)} km/h`);
+                  } else if (action === 'decrease') {
+                    const newSpeed = Math.max(minSpeed, currentSpeed - amount);
+                    setCurrentSpeed(newSpeed);
+                    showStatusMessage(`AI decreased speed to ${newSpeed.toFixed(1)} km/h`);
+                  }
+                }}
               />
             </div>
             
