@@ -9,6 +9,14 @@ import {
 import { Device } from '@/components/DeviceConnection';
 import { toast } from 'sonner';
 
+// Add these to the global window object for communication with native code
+declare global {
+  interface Window {
+    handleHeartRateChange?: (heartRate: number) => void;
+    handleTreadmillSpeedChange?: (speed: number) => void;
+  }
+}
+
 interface WorkoutContextProps {
   // Device state
   hrConnected: boolean;
@@ -119,9 +127,31 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
   // UI state
   const [statusMessage, setStatusMessage] = useState<string | null>('Connect your heart rate monitor and treadmill to begin');
   
+  // Setup global callbacks for native Bluetooth communication
+  useEffect(() => {
+    // Set up the global callback for heart rate data from Bluetooth
+    window.handleHeartRateChange = (heartRate: number) => {
+      setCurrentHR(heartRate);
+    };
+    
+    // Set up the global callback for treadmill speed data from Bluetooth
+    window.handleTreadmillSpeedChange = (speed: number) => {
+      setCurrentSpeed(speed);
+    };
+    
+    return () => {
+      // Clean up global callbacks
+      window.handleHeartRateChange = undefined;
+      window.handleTreadmillSpeedChange = undefined;
+    };
+  }, []);
+  
+  // Decide whether to use real device data or simulation
+  const useRealDevices = process.env.NODE_ENV === 'production' && !window.location.hostname.includes('lovable');
+  
   // Simulated heart rate interval
   useEffect(() => {
-    if (hrConnected) {
+    if (hrConnected && !useRealDevices) {
       const interval = setInterval(() => {
         simulateHRData();
       }, 1000);
@@ -182,9 +212,9 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     
   }, [currentHR, workoutActive, workoutPaused, targetZone, customMinHR, customMaxHR]);
   
-  // Simulate heart rate data
+  // Simulate heart rate data - only used if not connected to real device
   const simulateHRData = () => {
-    if (!hrConnected) return;
+    if (!hrConnected || useRealDevices) return;
     
     let simulatedHR;
     
@@ -227,10 +257,12 @@ export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children })
     setHrConnected(true);
     showStatusMessage(`Connected to ${device.name}`);
     
-    // Simulate initial heart rate
-    setTimeout(() => {
-      setCurrentHR(65 + Math.floor(Math.random() * 10));
-    }, 500);
+    // If using simulation, start simulating heart rate
+    if (!useRealDevices) {
+      setTimeout(() => {
+        setCurrentHR(65 + Math.floor(Math.random() * 10));
+      }, 500);
+    }
   };
   
   const handleTreadmillConnect = (device: Device) => {
