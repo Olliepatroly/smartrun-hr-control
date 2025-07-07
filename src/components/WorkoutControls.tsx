@@ -34,11 +34,11 @@ const WorkoutControls: React.FC<WorkoutControlsProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="flex space-x-4">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
         <Button
           onClick={onStart}
           disabled={!canStart || isWorkoutActive}
-          className="flex-1"
+          className="flex-1 min-w-0"
           variant="default"
           size="lg"
         >
@@ -49,7 +49,7 @@ const WorkoutControls: React.FC<WorkoutControlsProps> = ({
         <Button
           onClick={onPauseResume}
           disabled={!isWorkoutActive}
-          className="flex-1"
+          className="flex-1 min-w-0"
           variant={isPaused ? "default" : "secondary"}
           size="lg"
         >
@@ -69,7 +69,7 @@ const WorkoutControls: React.FC<WorkoutControlsProps> = ({
         <Button
           onClick={onStop}
           disabled={!isWorkoutActive}
-          className="flex-1"
+          className="flex-1 min-w-0"
           variant="destructive"
           size="lg"
         >
