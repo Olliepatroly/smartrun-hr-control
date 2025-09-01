@@ -2,7 +2,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.d79050c942a64cb4a29fdbb04ce5c6b2',
+  appId: 'com.oliver.smartrun',
   appName: 'smartrun-hr-control',
   webDir: 'dist',
   server: {
